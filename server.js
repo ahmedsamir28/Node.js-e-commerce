@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'development') {
     console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
-app.use('api/v1/categories',categoryRoute)
+app.use('/api/v1/categories',categoryRoute)
 
 //Start to listen the project
 const port = process.env.PORT || 8000
