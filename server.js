@@ -3,16 +3,17 @@ const dotenv = require('dotenv')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 
+//Start express app
+const app = express()
+//Start Body parser
+app.use(express.json())
+
 dotenv.config({ path: 'config.env' })
 const dbConnection = require('./Config/database')
 const categoryRoute = require('./Routes/categoryRoute')
 
 dbConnection()
-//Start express app
-const app = express()
 
-//Start Body parser
-app.use(express.json())
 
 //Start middlewares
 if (process.env.NODE_ENV === 'development') {
