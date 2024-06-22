@@ -17,6 +17,6 @@ const categorySchema = new mongoose.Schema({
 },{timestamps:true})
 
 //2-Create model on dataBase
-const categoryModel = mongoose.model('Category', categorySchema)
+const categoryModel = mongoose.model('category', categorySchema)
 
 module.exports = categoryModel

@@ -1,7 +1,6 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
-const mongoose = require('mongoose')
 
 //Start express app
 const app = express()
@@ -11,6 +10,7 @@ app.use(express.json())
 dotenv.config({ path: 'config.env' })
 const dbConnection = require('./Config/database')
 const categoryRoute = require('./Routes/categoryRoute')
+const subCategoryRoute = require('./Routes/subCategoryRoute')
 const ApiError = require('./Utils/apiError')
 const globalError = require('./Middlewares/errorMiddleware')
 
@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api/v1/categories', categoryRoute)
+app.use('/api/v1/subcategories', subCategoryRoute)
 
 app.all('*', (req, res, next) => {
     //Create error and send it to error handling middleware

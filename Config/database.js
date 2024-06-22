@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 
 const dbConnection = () => {
-    mongoose.connect(process.env.DB_URI)
-        .then((conn) => {
+    mongoose.connect(process.env.DB_URI).then((conn) => {
             console.log(`Database Connect: ${conn.connection.host}`);
         })
         // .catch((err) => {
