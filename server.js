@@ -11,6 +11,9 @@ dotenv.config({ path: 'config.env' })
 const dbConnection = require('./Config/database')
 const categoryRoute = require('./Routes/categoryRoute')
 const subCategoryRoute = require('./Routes/subCategoryRoute')
+const brandRoute = require('./Routes/brandRoute')
+
+
 const ApiError = require('./Utils/apiError')
 const globalError = require('./Middlewares/errorMiddleware')
 
@@ -25,6 +28,8 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api/v1/categories', categoryRoute)
 app.use('/api/v1/subcategories', subCategoryRoute)
+app.use('/api/v1/brands', brandRoute)
+
 
 app.all('*', (req, res, next) => {
     //Create error and send it to error handling middleware

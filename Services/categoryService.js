@@ -9,7 +9,7 @@ exports.getCategories = asyncHandler(async (req, res,next) => {
     const limit = req.query.limit * 1 || 5
     const skip = (page - 1) * limit
     const categories = await categoryModel.find({}).skip(skip).limit(limit)
-    res.status(200).json({ results: categories.length, data: categories })
+    res.status(200).json({ results: categories.length,page, data: categories })
 
 })
 
