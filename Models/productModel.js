@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema({
     images: [String],
     category: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Category',
+        ref: 'category',
         required: [true, 'Product must belong to a category'],
     },
     subCategory: {
@@ -55,12 +55,12 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Brand',
     },
-    ratingAverage: { 
+    ratingsAverage: { 
         type: Number,
         min: [1, 'Rating must be above or equal to 1.0'],
         max: [5, 'Rating must be below or equal to 5.0'], 
     },
-    ratingQuantity: {
+    ratingsQuantity: {
         type: Number,
         default: 0,
     }

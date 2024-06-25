@@ -30,7 +30,6 @@ exports.getSubCategory = asyncHandler(async (req, res, next) => {
     const subCategory = await subCategoryModel.findById(id).populate({ path: 'category', select: 'name -_id' });
 
     if (!subCategory) {
-        // res.status(404).json({ msg: `No category for this id ${id}` })
         return next(new ApiError(`No category for this id ${id}`, 400))
     }
     res.status(200).json({ data: subCategory })
