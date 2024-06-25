@@ -1,7 +1,6 @@
 const express = require('express')
 
 const { getCategories, createCategory, getCategory, updateCategory, deleteCategory } = require('../Services/categoryService');
-const validatorMiddleware = require('../Middlewares/validatorMiddleware');
 const { getCategoryValidator, createCategoryValidator, updateCategoryValidator, deleteCategoryValidator } = require('../Utils/Validators/categoryValidator');
 const subCategoriesRoute = require('./subCategoryRoute')
 

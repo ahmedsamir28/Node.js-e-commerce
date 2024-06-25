@@ -1,10 +1,12 @@
 const { check } = require("express-validator");
-
 const validatorMiddleware = require("../../Middlewares/validatorMiddleware");
+const categoryModel = require("../../Models/categoryModel");
+const subCategoryModel = require('../../Models/subCategoryModel')
 
-// exports.getProductValidator = [
-//     check('id').isMongoId().withMessage('Invalid Product id format'), validatorMiddleware,
-// ]
+
+exports.getProductValidator = [
+    check('id').isMongoId().withMessage('Invalid Product id format'), validatorMiddleware,
+]
 
 exports.createProductValidator = [
     check("title")
@@ -59,8 +61,24 @@ exports.createProductValidator = [
         .notEmpty()
         .withMessage('product must be belong to a category')
         .isMongoId()
-        .withMessage('Invalid id format'),
-    check('SubCategory').optional().isMongoId().withMessage('Invalid Id Formate'),
+        .withMessage('Invalid id format')
+        .custom((categorId) => categoryModel.findById(categorId).then(category => {
+            if (!category) {
+                return Promise.reject(
+                    new Error(`No category for this id: ${categorId}`)
+                )
+            }
+        })),
+    check('SubCategory').optional().isMongoId().withMessage('Invalid Id Formate')
+        .custom((subCategoriesId) => {
+            subCategoryModel.find({ _id: { $exists: true, $in:subCategoriesId}}).then(
+                (result)=>{
+                    if (result.length < 1 || result.length !== subCategoriesId.length) {
+                        return Promise.reject(new Error('Invalid subcaegories'))
+                    }
+                }
+            )
+        }),
     check('brand').optional().isMongoId().withMessage('Invalid Id Formate'),
     check('ratingsAverage')
         .optional()
@@ -74,7 +92,6 @@ exports.createProductValidator = [
         .optional()
         .isNumeric()
         .withMessage('ratingsQuantity must be a number'),
-    ,
     validatorMiddleware,
 ];
 
