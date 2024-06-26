@@ -85,7 +85,9 @@ exports.createProductValidator = [
                     subcategories.forEach((subCategory)=>{
                         subCategoriesIdsInDB.push(subCategory._id.toString())
                     })
-                    if (!val.every((v)=>subCategoriesIdsInDB.includes(v))) {
+                    //check if subCategories ids in db include subCategories in req.body
+                    const checker =(target,arr)=>target.every((v)=>arr.includes(v))
+                    if (!checker(val,subCategoriesIdsInDB)) {
                         return Promise.reject(new Error('subCategories not belong to category'))
                     }
                 }

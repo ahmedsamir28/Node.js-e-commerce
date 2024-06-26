@@ -18,7 +18,7 @@ exports.getSubCategories = asyncHandler(async (req, res, next) => {
     const skip = (page - 1) * limit
 
 
-    const subCategories = await subCategoryModel.find(req.filterObj).skip(skip).limit(limit).populate({ path: 'category', select: 'name -_id' });
+    const subCategories = await subCategoryModel.find(req.filterObj).skip(skip).limit(limit).populate({ path: 'category', select: 'name' });
 
     res.status(200).json({ results: subCategories.length, page, data: subCategories })
 
