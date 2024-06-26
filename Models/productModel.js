@@ -47,10 +47,10 @@ const productSchema = new mongoose.Schema({
         ref: 'category',
         required: [true, 'Product must belong to a category'],
     },
-    subCategories: {
+    subcategories: [{
         type: mongoose.Schema.ObjectId,
         ref: 'SubCategory',
-    },
+    }],
     brand: {
         type: mongoose.Schema.ObjectId,
         ref: 'Brand',

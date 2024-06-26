@@ -69,16 +69,16 @@ exports.createProductValidator = [
                 )
             }
         })),
-    check('SubCategory').optional().isMongoId().withMessage('Invalid Id Formate')
-        .custom((subCategoriesId) => {
-            subCategoryModel.find({ _id: { $exists: true, $in:subCategoriesId}}).then(
-                (result)=>{
+    check('subcategories').optional().isArray().withMessage('Subcategories should be an array')
+        .custom((subCategoriesId) =>
+            subCategoryModel.find({ _id: { $exists: true, $in: subCategoriesId } }).then(
+                (result) => {
                     if (result.length < 1 || result.length !== subCategoriesId.length) {
-                        return Promise.reject(new Error('Invalid subcaegories'))
+                        return Promise.reject(new Error('Invalid subcategories Ids'))
                     }
                 }
             )
-        }),
+        ),
     check('brand').optional().isMongoId().withMessage('Invalid Id Formate'),
     check('ratingsAverage')
         .optional()
