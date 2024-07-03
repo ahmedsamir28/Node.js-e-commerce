@@ -1,7 +1,8 @@
-const { check } = require("express-validator");
+const { check, body } = require("express-validator");
 const validatorMiddleware = require("../../Middlewares/validatorMiddleware");
 const categoryModel = require("../../Models/categoryModel");
-const subCategoryModel = require('../../Models/subCategoryModel')
+const subCategoryModel = require('../../Models/subCategoryModel');
+const slugify = require('slugify')
 
 
 exports.getProductValidator = [
@@ -62,10 +63,10 @@ exports.createProductValidator = [
         .withMessage('product must be belong to a category')
         .isMongoId()
         .withMessage('Invalid id format')
-        .custom((categorId) => categoryModel.findById(categorId).then(category => {
+        .custom((categoryId) => categoryModel.findById(categoryId).then(category => {
             if (!category) {
                 return Promise.reject(
-                    new Error(`No category for this id: ${categorId}`)
+                    new Error(`No category for this id: ${categoryId}`)
                 )
             }
         })),
@@ -78,16 +79,16 @@ exports.createProductValidator = [
                     }
                 }
             )
-        ).custom((val,{req})=>
-            subCategoryModel.find({category:req.body.category}).then(
-                (subcategories)=>{
-                    const subCategoriesIdsInDB=[]
-                    subcategories.forEach((subCategory)=>{
+        ).custom((val, { req }) =>
+            subCategoryModel.find({ category: req.body.category }).then(
+                (subcategories) => {
+                    const subCategoriesIdsInDB = []
+                    subcategories.forEach((subCategory) => {
                         subCategoriesIdsInDB.push(subCategory._id.toString())
                     })
                     //check if subCategories ids in db include subCategories in req.body
-                    const checker =(target,arr)=>target.every((v)=>arr.includes(v))
-                    if (!checker(val,subCategoriesIdsInDB)) {
+                    const checker = (target, arr) => target.every((v) => arr.includes(v))
+                    if (!checker(val, subCategoriesIdsInDB)) {
                         return Promise.reject(new Error('subCategories not belong to category'))
                     }
                 }
@@ -99,7 +100,7 @@ exports.createProductValidator = [
         .isNumeric()
         .withMessage('ratingAverage must be a number')
         .isLength({ min: 1 })
-        .withMessage('Rating must be abovee or equal 1.0')
+        .withMessage('Rating must be above or equal 1.0')
         .isLength({ max: 5 })
         .withMessage('Rating must be below or equal 5.0'),
     check('ratingsQuantity')
@@ -110,7 +111,11 @@ exports.createProductValidator = [
 ];
 
 exports.updateProductValidator = [
-    check("id").isMongoId().withMessage("Invalid Product id format"),
+    check('id').isMongoId().withMessage("Invalid Product id format"),
+    body('title').custom((val, { req }) => {
+        req.body.slug = slugify(val)
+        return true
+    }),
     validatorMiddleware,
 ];
 

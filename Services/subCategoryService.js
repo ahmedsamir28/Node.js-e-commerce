@@ -2,6 +2,7 @@ const subCategoryModel = require('../Models/subCategoryModel')
 const slugify = require('slugify')
 const asyncHandler = require('express-async-handler')
 const ApiError = require('../Utils/apiError')
+const handler = require('./handlersFactory')
 
 exports.createFilterObj = (req, res, next) => {
 
@@ -57,30 +58,6 @@ exports.createSubCategory = asyncHandler(async (req, res, next) => {
 })
 
 //update specific  category
-exports.updateSubCategory = asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const { name, category } = req.body
-
-    const subCategory = await subCategoryModel.findOneAndUpdate(
-        { _id: id },
-        { name: name, slug: slugify(name), category },
-        { new: true }
-    )
-    if (!subCategory) {
-        // res.status(404).json({ msg: `No SubCategory for this id ${id}` })
-        return next(new ApiError(`No SubCategory for this id ${id}`, 400))
-    }
-    res.status(200).json({ data: subCategory })
-})
-
+exports.updateSubCategory = handler.updateOne(subCategoryModel)
 //delete specific SubCategory 
-exports.deleteSubCategory = (asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const subCategory = await subCategoryModel.findByIdAndDelete(id)
-    if (!subCategory) {
-        // res.status(404).json({ msg: `No SubCategory for this id ${id}` })
-        return next(new ApiError(`No SubCategory for this id ${id}`, 400))
-    }
-    res.status(204).send()
-}))
-
+exports.deleteSubCategory = handler.deleteOne(subCategoryModel)
