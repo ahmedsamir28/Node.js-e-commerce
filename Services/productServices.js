@@ -37,12 +37,9 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 }
 )
 
-exports.createProduct = asyncHandler(async (req, res, next) => {
-    req.body.slug = slugify(req.body.title);
-    const product = await productModel.create(req.body);
-    res.status(201).json({ data: product });
-});
 
+//create product
+exports.createProduct = handler.createOne(productModel)
 //update specific product
 exports.updateProduct = handler.updateOne(productModel)
 //delete specific product 

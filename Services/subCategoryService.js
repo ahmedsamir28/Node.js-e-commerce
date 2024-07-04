@@ -45,18 +45,7 @@ exports.setCategoryIdToBody = (req, res, next) => {
 }
 
 // Create subCategories
-exports.createSubCategory = asyncHandler(async (req, res, next) => {
-    if (!req.body.category) req.body.category = req.params.categoryId
-
-    // const name = req.body.name
-    const { name, category } = req.body
-
-    const suCategory = await subCategoryModel.create(
-        { name, slug: slugify(name), category }
-    )
-    res.status(201).json({ data: suCategory })
-})
-
+exports.createSubCategory =handler.createOne(subCategoryModel)
 //update specific  category
 exports.updateSubCategory = handler.updateOne(subCategoryModel)
 //delete specific SubCategory 

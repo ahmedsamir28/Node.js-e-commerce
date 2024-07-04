@@ -1,5 +1,4 @@
 const brandModel = require('../Models/brandsModel ')
-const slugify = require('slugify')
 const asyncHandler = require('express-async-handler')
 const ApiError = require('../Utils/apiError')
 const ApiFeatures = require('../Utils/apiFeatures')
@@ -37,27 +36,8 @@ exports.getBrand = asyncHandler(async (req, res, next) => {
 }
 )
 
-{
-    // use async and await
-    exports.createBrand = asyncHandler(async (req, res, next) => {
-        // const name = req.body.name
-        const { name } = req.body
-
-        const Brand = await brandModel.create({ name, slug: slugify(name) })
-        res.status(201).json({ data: Brand })
-
-    })
-
-    //use then and cash
-    // exports.createBrand= (req,res)=>{
-    //     const name = req.body.name
-    //     brandModel.create({name, slug:slugify(name)})
-    //     .then((brand)=>res.status(201).json({data: brand}))
-    //     .catch((err)=>res.status(400).send(err))
-    // }
-
-}
-
+ //create brand 
+exports.createBrand = handler.createOne(brandModel)
 //update specific  brand
 exports.updateBrand = handler.updateOne(brandsModel)
 //delete specific Brand

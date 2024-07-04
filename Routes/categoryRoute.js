@@ -7,7 +7,7 @@ const subCategoriesRoute = require('./subCategoryRoute')
 const router = express.Router()
 
 router.use('/:categoryId/subcategories',subCategoriesRoute)
-router.route('/').get(getCategories).post(createCategoryValidator, createCategory)
+router.route('/').get(getCategories).post(createCategoryValidator,createCategory)
 
 router.route('/:id')
     .get(getCategoryValidator, getCategory)
