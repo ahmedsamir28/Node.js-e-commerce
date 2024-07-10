@@ -1,25 +1,25 @@
-const categoryModel = require('../Models/categoryModel')
+const categoryModel = require('../Models/categoryModel');
 const handler = require('./handlersFactory')
-const multer =  require('multer')
-const { v4: uuidv4 } = require('uuid');
+const asyncHandler = require('express-async-handler');
 
-//1- DiskStorage engine
-const multerStorage =  multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,'uploads/categories')
-    },
-    filename:function(req,file,cb){
-        //category-${id}-Date.now().jpeg
-        const ext =file.mimetype.split('/')[1]
-        const filename = `category-${uuidv4()}-${Date.now()}.${ext}`
-        cb(null, filename)
-    },
+const { v4: uuidv4 } = require('uuid');
+const sharp = require('sharp');
+const { uploadSingleImage } = require('../Middlewares/uploadImageMiddleware');
+
+//upload single image  
+exports.uploadCategoryImage = uploadSingleImage('image')
+//image processing
+exports.resizeImage =asyncHandler(async(req, res, next) => {
+    const filename = `category-${uuidv4()}-${Date.now()}.jpeg`
+    await sharp(req.file.buffer)
+        .resize(600, 600)
+        .toFormat('jpeg')
+        .toFile(`uploads/categories/${filename}`)
+        //Save image  into our db 
+        req.body.image = filename
+        next()
 })
 
-
-const upload = multer({storage:multerStorage})
-
-exports.uploadCategoryImage = upload.single('image')
 //get list of categories
 exports.getCategories = handler.getAll(categoryModel)
 //get specific category 
