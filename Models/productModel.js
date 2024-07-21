@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true,
         minlength: [3, 'Too short product title'],
-        maxlength: [50, 'Too long product title'], 
+        maxlength: [50, 'Too long product title'],
     },
     slug: {
         type: String,
@@ -37,7 +37,7 @@ const productSchema = new mongoose.Schema({
     priceAfterDiscount: {
         type: Number,
     },
-    colors: [String], 
+    colors: [String],
     imageCover: {
         type: String,
         required: [true, 'Product imageCover is required'],
@@ -56,10 +56,10 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Brand',
     },
-    ratingsAverage: { 
+    ratingsAverage: {
         type: Number,
         min: [1, 'Rating must be above or equal to 1.0'],
-        max: [5, 'Rating must be below or equal to 5.0'], 
+        max: [5, 'Rating must be below or equal to 5.0'],
     },
     ratingsQuantity: {
         type: Number,
@@ -68,12 +68,34 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 //Mongoose query middleware
-productSchema.pre(/^find/,function(next){
+productSchema.pre(/^find/, function (next) {
     this.populate({
-        path:'category',
-        select:'name _id'
+        path: 'category',
+        select: 'name _id'
     })
     next()
+})
+
+const setImageUrl = (doc) => {
+    if (doc.imageCover) {
+        const imageCoverUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+        doc.imageCover = imageCoverUrl;
+    }
+    if (doc.images) {
+        const images = [];
+        doc.images.forEach((image) => {
+            const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+            images.push(imageUrl);
+        });
+        doc.images = images;
+    }
+};
+
+productSchema.post('init',(doc)=>{
+    setImageUrl(doc)
+})
+productSchema.post('save',(doc)=>{
+    setImageUrl(doc)
 })
 // 2- Create model on database
 module.exports = mongoose.model('Product', productSchema);
