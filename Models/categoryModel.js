@@ -1,36 +1,39 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 //1-create Schema
-const categorySchema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required:[true,'Category required'] ,
-        unique:[true,'Category must be unique'],
-        minLength:[3,'Too short category name'],
-        maxLength:[32,'Too long category name']
+      type: String,
+      required: [true, "Category required"],
+      unique: [true, "Category must be unique"],
+      minLength: [3, "Too short category name"],
+      maxLength: [32, "Too long category name"],
     },
     // A and B => shopping.com/a-and-b
-    slug:{
-        type:String,
-        lowercase:true
+    slug: {
+      type: String,
+      lowercase: true,
     },
-    image:String
+    image: String,
+  },
+  { timestamps: true },
+);
+const setImageURL = (doc) => {
+  if (doc.image) {
+    const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
+    doc.image = imageUrl;
+  }
+};
 
-},{timestamps:true})
-
-const setImageURL = (doc)=>{
-    if (doc.image) {
-        const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`
-        doc.image = imageUrl
-    }
-}
-
-categorySchema.post('init',(doc)=>{
-    setImageURL(doc)
-})
-categorySchema.post('save',(doc)=>{
-    setImageURL(doc)
-})
+// findOne, findAll and update 
+categorySchema.post("init", (doc) => {
+  setImageURL(doc);
+});
+// create
+categorySchema.post("save", (doc) => {
+  setImageURL(doc);
+});
 //2-Create model on dataBase
-const categoryModel = mongoose.model('category', categorySchema)
+const categoryModel = mongoose.model("category", categorySchema);
 
-module.exports = categoryModel
+module.exports = categoryModel;

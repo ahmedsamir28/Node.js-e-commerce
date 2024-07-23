@@ -44,7 +44,7 @@ class ApiFeatures {
 
     search(modelName) {
         if (this.queryString.keyword) {
-            let query = {};
+            const query = {};
             if (modelName === 'Products') {
                 query.$or = [
                     { title: { $regex: this.queryString.keyword, $options: 'i' } },
@@ -53,13 +53,13 @@ class ApiFeatures {
             } else {
                 query = { name: { $regex: this.queryString.keyword, $options: 'i' } };
             }
-            
+
             this.mongooseQuery = this.mongooseQuery.find(query);
         }
         return this;
     }
 
-    
+
     pagination(countDocument) {
         const page = this.queryString.page * 1 || 1
         const limit = this.queryString.limit * 1 || 5
@@ -71,7 +71,7 @@ class ApiFeatures {
         pagination.limit = limit
         pagination.numberOfPages = Math.ceil(countDocument / limit)
 
-        //next page 
+        //next page
         if (endIndex < countDocument) {
             pagination.next = page + 1
         }

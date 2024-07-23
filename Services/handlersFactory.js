@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const ApiError = require('../Utils/apiError');
 const ApiFeatures = require('../Utils/apiFeatures');
 
-
 exports.getAll = (Model,modelName='') =>
     asyncHandler(async (req, res, next) => {
         let filter = {}
@@ -32,6 +31,7 @@ exports.getOne = (Model) =>
         }
         res.status(200).json({ data: document })
     }
+
     )
 
 exports.deleteOne = (Model) =>
