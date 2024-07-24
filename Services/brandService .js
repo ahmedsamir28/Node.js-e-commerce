@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 
 //upload single image
-exports.uploadCategoryImage = uploadSingleImage("image");
+exports.uploadBrandImage = uploadSingleImage("image");
 //image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
   const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;
