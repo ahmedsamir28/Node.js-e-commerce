@@ -20,6 +20,8 @@ const subCategoryRoute = require('./Routes/subCategoryRoute')
 const brandRoute = require('./Routes/brandRoute')
 const productRoute = require('./Routes/productRoute')
 const userRoute = require('./Routes/userRoute')
+const authRoute = require('./Routes/authRoute')
+
 
 
 const ApiError = require('./Utils/apiError')
@@ -38,6 +40,8 @@ app.use('/api/v1/subcategories', subCategoryRoute)
 app.use('/api/v1/brands', brandRoute)
 app.use('/api/v1/products', productRoute)
 app.use('/api/v1/users', userRoute)
+app.use('/api/v1/auth',authRoute)
+
 
 
 app.all('*', (req, res, next) => {

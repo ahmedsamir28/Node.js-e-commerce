@@ -1,9 +1,9 @@
-const { check, body } = require('express-validator');
+const { check } = require('express-validator');
 const slugify = require('slugify');
 const validatorMiddleware = require('../../Middlewares/validatorMiddleware');
 const userModel = require('../../Models/userModel');
 
-exports.createUserValidator = [
+exports.signUpValidator = [
     check('name')
         .notEmpty()
         .withMessage('User required')
@@ -43,33 +43,21 @@ exports.createUserValidator = [
         .notEmpty()
         .withMessage('Password confirmation required'),
 
-    check('phone')
-        .optional()
-        .isMobilePhone('ar-EG')
-        .withMessage('Invalid phone number; only Egyptian phone numbers are accepted'),
-
-    check('profileImg').optional(),
-    check('role').optional(),
-
     validatorMiddleware,
 ];
 
-exports.getUserValidator = [
-    check('id').isMongoId().withMessage('Invalid User id format'),
+exports.loginValidator = [
+    check('email')
+        .notEmpty()
+        .withMessage('Email required')
+        .isEmail()
+        .withMessage('Invalid email address'),
+    check('password')
+        .notEmpty()
+        .withMessage('Password required')
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters'),
     validatorMiddleware,
 ];
 
-exports.updateUserValidator = [
-    check('id').isMongoId().withMessage('Invalid User id format'),
-    body('name').optional()
-        .custom((val, { req }) => {
-            req.body.slug = slugify(val);
-            return true;
-        }),
-    validatorMiddleware,
-];
 
-exports.deleteUserValidator = [
-    check('id').isMongoId().withMessage('Invalid User id format'),
-    validatorMiddleware,
-];
