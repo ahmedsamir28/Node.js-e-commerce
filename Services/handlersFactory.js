@@ -27,7 +27,7 @@ exports.getOne = (Model) =>
         const document = await Model.findById(id)
         if (!document) {
             // res.status(404).json({ msg: `No Brand for this id ${id}` })
-            return next(new ApiError(`No Brand for this id ${id}`, 400))
+            return next(new ApiError(`No document for this id ${id}`, 400))
         }
         res.status(200).json({ data: document })
     }

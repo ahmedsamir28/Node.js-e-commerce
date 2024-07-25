@@ -63,7 +63,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
             )
         )
     }
-    
+
     // 4) check if user change his password  after token created
     if (currentUser.passwordChangedAt) {
         const passChangedTimesTamp = parseInt(
@@ -81,4 +81,18 @@ exports.protect = asyncHandler(async (req, res, next) => {
     req.user = currentUser
     next()
 })
+
+// ["admin","manager"]
+exports.allowedTo = (...roles) =>
+    asyncHandler(async (req, res, next) => {
+        // 1) access roles 
+        // 2) access register user (req.user.role)
+        if (!roles.includes(req.user.role)) {
+            return next(
+                new ApiError('You are not allowed to access this route', 403)
+            )
+        }
+        next()
+    })
+
 

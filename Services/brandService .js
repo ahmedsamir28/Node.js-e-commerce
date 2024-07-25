@@ -11,12 +11,15 @@ exports.uploadBrandImage = uploadSingleImage("image");
 //image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
   const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat("jpeg")
-    .toFile(`uploads/brands/${filename}`);
-  //Save image  into our db
-  req.body.image = filename;
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .toFile(`uploads/brands/${filename}`);
+    //Save image  into our db
+    req.body.image = filename;
+  }
+
   next();
 });
 
