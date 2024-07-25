@@ -34,6 +34,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     res.status(200).json({ data: user, token });
 });
 
+// Make sure this  user si logged in 
 exports.protect = asyncHandler(async (req, res, next) => {
     // 1) check if token exist , if exist get 
     let token
@@ -82,6 +83,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     next()
 })
 
+//Authorization (user permissions)
 // ["admin","manager"]
 exports.allowedTo = (...roles) =>
     asyncHandler(async (req, res, next) => {
@@ -94,5 +96,4 @@ exports.allowedTo = (...roles) =>
         }
         next()
     })
-
 
