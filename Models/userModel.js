@@ -24,10 +24,15 @@ const userSchema = new mongoose.Schema({
         required: [true, 'password required'],
         minlength: [6, 'Too short password']
     },
-    passwordChangedAt:Date,
+    passwordChangedAt: Date,
+    passwordResetCode: String,
+    passwordResetExpires: Date,
+    passwordResetVerified: Boolean,
+
+
     role: {
         type: String,
-        enum: ['user','manager','admin'],
+        enum: ['user', 'manager', 'admin'],
         default: 'user'
     },
     active: {
@@ -48,9 +53,9 @@ userSchema.post("save", (doc) => {
     setImageURL(doc);
 });
 
-userSchema.pre('save',async function(next){
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()
-    this.password = await bcrypt.hash (this.password ,12)
-    next()    
+    this.password = await bcrypt.hash(this.password, 12)
+    next()
 })
 module.exports = mongoose.model('User', userSchema)
