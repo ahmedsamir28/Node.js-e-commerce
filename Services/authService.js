@@ -1,12 +1,11 @@
 const crypto = require("crypto")
 
-const jwt = require("jsonwebtoken");
-
 const userModel = require("../Models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const ApiError = require("../Utils/apiError");
 const sendEmail = require("../Utils/sendEmail");
+const jwt = require("jsonwebtoken");
 
 const createToken = (payload) =>
     jwt.sign({ userId: payload }, process.env.JWT_SECRET_KEY, {
@@ -42,7 +41,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
     let token
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1]
-        console.log(token);
     }
     if (!token) {
         return next(
