@@ -1,35 +1,29 @@
-const brandModel = require("../Models/brandsModel ");
+const reviewModel = require("../Models/reviewModel");
 const handler = require("./handlersFactory");
-const asyncHandler = require("express-async-handler");
 
-const { uploadSingleImage } = require("../Middlewares/uploadImageMiddleware");
-const { v4: uuidv4 } = require("uuid");
-const sharp = require("sharp");
+// Nested route 
+// Get /api/v1/products/:productId/reviews
+exports.createFilterObj = (req, res, next) => {
+    let filterObject = {};
+    if (req.params.productId) filterObject = { product: req.params.productId };
+    req.filterObj = filterObject
+    next()
+}
 
-//upload single image
-exports.uploadBrandImage = uploadSingleImage("image");
-//image processing
-exports.resizeImage = asyncHandler(async (req, res, next) => {
-  const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;
-  if (req.file) {
-    await sharp(req.file.buffer)
-      .resize(600, 600)
-      .toFormat("jpeg")
-      .toFile(`uploads/brands/${filename}`);
-    //Save image  into our db
-    req.body.image = filename;
-  }
+// Nested route 
+exports.setProductAndUserIdToBody = (req, res, next) => {
+    if (!req.body.product) req.body.product = req.params.productId
+    if (!req.body.user) req.body.user = req.user._id
+    next()
+}
 
-  next();
-});
-
-//get list of brands
-exports.getBrands = handler.getAll(brandModel);
-//get specific brand
-exports.getBrand = handler.getOne(brandModel);
-//create brand
-exports.createBrand = handler.createOne(brandModel);
-//update specific  brand
-exports.updateBrand = handler.updateOne(brandModel);
-//delete specific Brand
-exports.deleteBrand = handler.deleteOne(brandModel);
+//get list of reviews
+exports.getReviews = handler.getAll(reviewModel);
+//get specific review
+exports.getReview = handler.getOne(reviewModel);
+//create review
+exports.createReview = handler.createOne(reviewModel);
+//update specific  review
+exports.updateReview = handler.updateOne(reviewModel);
+//delete specific Review
+exports.deleteReview = handler.deleteOne(reviewModel);

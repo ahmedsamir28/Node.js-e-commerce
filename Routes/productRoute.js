@@ -10,14 +10,19 @@ const { getProducts,
 const { createProductValidator, getProductValidator, updateProductValidator, deleteProductValidator } = require('../Utils/Validators/productValidator');
 
 const authService = require('../Services/authService')
+const reviewRoute = require('./reviewRoute');
 
 const router = express.Router();
 
-router.route('/').get(getProducts).post(
-    authService.protect,
-    authService.allowedTo('admin', 'manager'),
-    uploadProductImages, resizeProductImages, createProductValidator, createProduct
-);
+router.use('/:productId/reviews', reviewRoute)
+
+router.route('/')
+    .get(getProducts).
+    post(
+        authService.protect,
+        authService.allowedTo('admin', 'manager'),
+        uploadProductImages, resizeProductImages, createProductValidator, createProduct
+    );
 
 router.route('/:id')
     .get(getProductValidator, getProduct)

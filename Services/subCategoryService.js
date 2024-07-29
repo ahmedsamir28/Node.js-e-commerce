@@ -2,14 +2,15 @@ const subCategoryModel = require('../Models/subCategoryModel')
 const asyncHandler = require('express-async-handler')
 const handler = require('./handlersFactory')
 
-exports.createFilterObj = (req, res, next) => {
 
+// nested route 
+// Get /api/v1/categories/:categoryId/subcategory
+exports.createFilterObj = (req, res, next) => {
     let filterObject = {};
     if (req.params.categoryId) filterObject = { category: req.params.categoryId };
     req.filterObj = filterObject
     next()
 }
-
 
 exports.setCategoryIdToBody = (req, res, next) => {
     // nested route 

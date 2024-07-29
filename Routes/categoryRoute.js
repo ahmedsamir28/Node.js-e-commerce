@@ -7,11 +7,13 @@ const authService = require('../Services/authService')
 const router = express.Router()
 
 router.use('/:categoryId/subcategories', subCategoriesRoute)
-router.route('/').get(getCategories).post(
-    authService.protect,
-    authService.allowedTo('admin', 'manager'),
-    uploadCategoryImage, resizeImage, createCategoryValidator, createCategory
-)
+router.route('/')
+    .get(getCategories)
+    .post(
+        authService.protect,
+        authService.allowedTo('admin', 'manager'),
+        uploadCategoryImage, resizeImage, createCategoryValidator, createCategory
+    )
 
 router.route('/:id')
     .get(getCategoryValidator, getCategory)

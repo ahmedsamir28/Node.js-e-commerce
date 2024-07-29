@@ -65,7 +65,18 @@ const productSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     }
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    // To enable virtual populate
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
+});
+
+productSchema.virtual('reviews',{
+    ref:'Review',
+    foreignField:'product',
+    localField:'_id'
+})
 
 //Mongoose query middleware
 productSchema.pre(/^find/, function (next) {
@@ -98,4 +109,4 @@ productSchema.post('save',(doc)=>{
     setImageUrl(doc)
 })
 // 2- Create model on database
-module.exports = mongoose.model('Prodzuct', productSchema);
+module.exports = mongoose.model('Product', productSchema);

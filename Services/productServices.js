@@ -1,7 +1,6 @@
 const multer = require("multer");
 const productModel = require("../Models/productModel");
 const handler = require("./handlersFactory");
-const ApiError = require("../Utils/apiError");
 const asyncHandler = require("express-async-handler");
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
@@ -47,7 +46,7 @@ exports.resizeProductImages = asyncHandler(async (req, res, next) => {
 //get list of products
 exports.getProducts = handler.getAll(productModel, "Products");
 //get specific product
-exports.getProduct = handler.getOne(productModel);
+exports.getProduct = handler.getOne(productModel, "reviews");
 //create product
 exports.createProduct = handler.createOne(productModel);
 //update specific product
