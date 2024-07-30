@@ -38,17 +38,37 @@ const userSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
-    }
+    },
+    // child reference (one to many)
+    wishlist: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Product'
+        }
+    ],
+    addresses: [
+        {
+            id: { type: mongoose.Schema.Types.ObjectId },
+            alias: String,
+            details: String,
+            phone: String,
+            city: String,
+            postalCode: String
+        }
+    ]
 }, { timestamps: true })
+
 const setImageURL = (doc) => {
     if (doc.profileImg) {
         const imageUrl = `${process.env.BASE_URL}/users/${doc.profileImg}`;
         doc.profileImg = imageUrl;
     }
 };
+
 userSchema.post("init", (doc) => {
     setImageURL(doc);
 });
+
 userSchema.post("save", (doc) => {
     setImageURL(doc);
 });

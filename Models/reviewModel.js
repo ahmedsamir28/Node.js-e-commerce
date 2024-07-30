@@ -16,6 +16,7 @@ const reviewSchema = new mongoose.Schema(
             ref: 'User',
             required: [true, 'Review must belong to user']
         },
+        // parent reference (one to many)
         product: {
             type: mongoose.Schema.ObjectId,
             ref: 'Product',
@@ -65,10 +66,10 @@ reviewSchema.post('save', async function () {
     await this.constructor.calcAverageRatingsAndQuantity(this.product)
 })
 
-reviewSchema.pre('remove', async function (next) {
-    this.constructor.calcAverageRatingsAndQuantity(this.product);
-    next()
-});
+// reviewSchema.pre('remove', async function (next) {
+//     this.constructor.calcAverageRatingsAndQuantity(this.product);
+//     next()
+// });
 
 
 const reviewModel = mongoose.model("Review", reviewSchema);

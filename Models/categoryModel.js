@@ -29,6 +29,7 @@ const setImageURL = (doc) => {
 categorySchema.post("init", (doc) => {
   setImageURL(doc);
 });
+
 // create
 categorySchema.post("save", (doc) => {
   setImageURL(doc);
