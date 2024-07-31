@@ -4,6 +4,17 @@ const express = require('express')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
 
+dotenv.config({ path: 'config.env' })
+const ApiError = require('./Utils/apiError')
+const globalError = require('./Middlewares/errorMiddleware')
+const dbConnection = require('./Config/database')
+
+//Routes 
+const mountRoutes = require('./Routes')
+
+//Connect with db
+dbConnection()
+
 //Start express app
 const app = express()
 
@@ -12,45 +23,14 @@ app.use(express.json())
 
 app.use(express.static(path.join(__dirname, 'uploads')))
 
-dotenv.config({ path: 'config.env' })
-
-const dbConnection = require('./Config/database')
-const categoryRoute = require('./Routes/categoryRoute')
-const subCategoryRoute = require('./Routes/subCategoryRoute')
-const brandRoute = require('./Routes/brandRoute')
-const productRoute = require('./Routes/productRoute')
-const userRoute = require('./Routes/userRoute')
-const authRoute = require('./Routes/authRoute')
-const reviewRoute = require('./Routes/reviewRoute')
-const wishListRoute = require('./Routes/wishlistRoute')
-const addressRoute = require('./Routes/addressRoute')
-
-
-const ApiError = require('./Utils/apiError')
-const globalError = require('./Middlewares/errorMiddleware')
-
-dbConnection()
-
 //Start middlewares
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
     console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
-app.use('/api/v1/categories', categoryRoute)
-app.use('/api/v1/subcategories', subCategoryRoute)
-app.use('/api/v1/brands', brandRoute)
-app.use('/api/v1/products', productRoute)
-app.use('/api/v1/users', userRoute)
-app.use('/api/v1/auth',authRoute)
-app.use('/api/v1/reviews',reviewRoute)
-app.use('/api/v1/wishlist',wishListRoute)
-app.use('/api/v1/addresses',addressRoute)
-
-
-
-
-
+// Mount Routes
+mountRoutes(app)
 
 app.all('*', (req, res, next) => {
     //Create error and send it to error handling middleware
