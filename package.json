@@ -4,8 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start:dev": "nodemon server.js",
-    "start": "NODE_ENV=production node server.js",
-    "postinstall": "apt-get install -y libvips-dev && npm install sharp"
+    "start": "NODE_ENV=production node server.js"
   },
   "author": "ahmed samir",
   "license": "ISC",
