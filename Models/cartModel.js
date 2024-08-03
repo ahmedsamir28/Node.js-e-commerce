@@ -14,7 +14,6 @@ const cartSchema = new mongoose.Schema(
                 },
                 color: String,
                 price: Number,
-                image:String
             },
         ],
         totalCartPrice: Number,
@@ -25,6 +24,15 @@ const cartSchema = new mongoose.Schema(
         }
     }, { timestamps: true }
 )
+
+//Mongoose query middleware
+cartSchema.pre(/^find/, function (next) {
+    this.populate({
+        path:'cartItems.product',
+        select :'title imageCover'
+    })
+    next()
+})
 
 const cartModel = mongoose.model('Cart', cartSchema)
 

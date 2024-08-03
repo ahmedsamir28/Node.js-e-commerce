@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema(
     {
         user: {
-            type: mongoose.Schema.objectId,
+            type: mongoose.Schema.ObjectId,
             ref: 'User',
             required: [true, 'Order must be belong to user']
         },
@@ -21,6 +21,12 @@ const orderSchema = new mongoose.Schema(
         taxPrice: {
             type: Number,
             default: 0
+        },
+        shippingAddress: {
+            details: String,
+            phone: String,
+            city: String,
+            postalCode: String
         },
         shippingPrice: {
             type: Number,
@@ -48,6 +54,18 @@ const orderSchema = new mongoose.Schema(
     { timestamps: true }
 )
 
-const orderModel  = mongoose.model('Order',orderSchema)
+//Mongoose query middleware
+orderSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'user',
+        select: 'name profileImg email phone'
+    }).populate({
+        path:'cartItems.product',
+        select :'title imageCover'
+    })
+    next()
+})
+
+const orderModel = mongoose.model('Order', orderSchema)
 
 module.exports = orderModel
