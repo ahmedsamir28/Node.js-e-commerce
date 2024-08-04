@@ -6,6 +6,7 @@ const ApiError = require("../Utils/apiError");
 const cartModel = require("../Models/cartModel");
 const orderModel = require("../Models/orderModel");
 const productModel = require("../Models/productModel");
+const userModel = require('../Models/userModel');
 
 // @desc create cash order 
 // @route POST /api/v1/orders/cartId
@@ -154,3 +155,65 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     // 4) send session to response
     res.status(200).json({ status: 'Success', session });
 });
+
+
+const createCardOrder = async (session) => {
+    // 1) Get needed data from session
+    const cartId = session.client_reference_id;
+    const orderPrice = session.display_items[0].amount / 100;
+    const shippingAddress = session.metadata;
+
+    // 2) Get Cart and User
+    const cart = await cartModel.findById(cartId);
+    const user = await userModel.findOne({ email: session.customer_email });
+
+    //3) Create order
+    const order = await orderModel.create({
+        user: user._id,
+        cartItems: cart.cartItems,
+        shippingAddress,
+        totalOrderPrice: orderPrice,
+        paymentMethodType: 'card',
+        isPaid: true,
+        paidAt: Date.now(),
+    });
+
+    // 4) After creating order decrement product quantity, increment sold
+    // Performs multiple write operations with controls for order of execution.
+    if (order) {
+        const bulkOption = cart.products.map((item) => ({
+            updateOne: {
+                filter: { _id: item.product },
+                update: { $inc: { quantity: -item.count, sold: +item.count } },
+            },
+        }));
+
+        await productModel.bulkWrite(bulkOption, {});
+
+        // 5) Clear cart
+        await cartModel.findByIdAndDelete(cart._id);
+    }
+};
+
+// @desc    This webhook will run when stipe payment successfully paid
+// @route   PUT /webhook-checkout
+// @access  From stripe
+exports.webhookCheckout = asyncHandler(async (req, res, next) => {
+    const signature = req.headers['stripe-signature'];
+    let event;
+    try {
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            process.env.STRIPE_WEBHOOK_SECRET
+        );
+    } catch (err) {
+        return res.status(400).send(`Webhook error: ${err.message}`);
+    }
+
+    if (event.type === 'checkout.session.completed') {
+        createCardOrder(event.data.object);
+    }
+
+    res.status(200).json({ received: true });
+})
